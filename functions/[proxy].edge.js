@@ -3,7 +3,7 @@ export default async function handler(req, context) {
   const route = parsedUrl.pathname;
   const envVariable = context.env.TEST_KEY;
   
-  if (route === '/test') {
+  if (route === '/api/test') {
     console.log("Inside /test");
     
     const target = "https://exampleeu.eu-contentstackapps.com/";
@@ -20,24 +20,12 @@ export default async function handler(req, context) {
 
     console.log("sample", text.slice(0, 200));
 
-    let response;
-    try {
-      response = JSON.parse(text);
-    } catch (e) {
-      response = { originalResponse: text };
-    }
-    
-    response = {
-      ...response,
-      time: new Date(),
-      envVariableValue: envVariable,
-    }
-
-    return new Response(JSON.stringify(response), {
+    // Return the HTML content directly (rewrite to target website)
+    return new Response(text, {
       status: res.status,
       headers: {
-        'X-Message': 'Change response headers',
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/html',
+        'X-Message': 'Rewritten from ' + target
       }
     })
   }
