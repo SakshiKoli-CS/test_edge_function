@@ -1,5 +1,5 @@
 const mobileHost = "edge-device-adaptation-mobile.contentstackapps.com";
-const webHost = "testedgefunction.contentstackapps.com";
+const webHost = "exampleeu.eu-contentstackapps.com"; // Temporary working domain
 
 export default async function handler(request) {
   const userAgentHeader = request.headers.get('User-Agent');
