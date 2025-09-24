@@ -1,4 +1,4 @@
-const mobileHost = "edge-device-adaptation-mobile.contentstackapps.com";
+const mobileHost = "dynamiclaunch.contentstackapps.com";
 const webHost = "exampleeu.eu-contentstackapps.com"; // Temporary working domain
 
 export default async function handler(request) {
