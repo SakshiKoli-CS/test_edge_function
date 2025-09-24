@@ -10,7 +10,7 @@ export default async function handler(request) {
     targetUrl.hostname = webHost;
   }
 
-  const newRequest = new Request(targetUrl.toString(), request);
+  const newRequest = new Request(targetUrl, request);
   return fetch(newRequest);
 }
 
