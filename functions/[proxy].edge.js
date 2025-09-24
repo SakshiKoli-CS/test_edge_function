@@ -1,35 +1,39 @@
-export default async function handler(req, context) {
-  const parsedUrl = new URL(req.url);
-  const route = parsedUrl.pathname;
-  const envVariable = context.env.TEST_KEY;
+const mobileHost = "edge-device-adaptation-mobile.contentstackapps.com";
+const webHost = "testedgefunction.contentstackapps.com";
+
+export default async function handler(request) {
+  const userAgentHeader = request.headers.get('User-Agent');
+  const originalUrl = new URL(request.url);
   
-  if (route === '/test') {
-    console.log("Inside /test");
-    
-    const target = "https://exampleeu.eu-contentstackapps.com/";
-
-    const headers = new Headers();
-    headers.set("Host", parsedUrl.host);
-
-    const res = await fetch(new Request(target, { headers }));
-    const text = await res.text();
-
-    console.log("status", res.status);
-    console.log("server", res.headers.get("server"));
-    console.log("cf-cache-status", res.headers.get("cf-cache-status"));
-
-    console.log("sample", text.slice(0, 200));
-
-    // Return the HTML content directly (rewrite to target website)
-    return new Response(text, {
-      status: res.status,
-      headers: {
-        'Content-Type': 'text/html',
-        'X-Message': 'Rewritten from ' + target
-      }
-    })
+  const targetUrl = new URL(originalUrl);
+  if (isMobile(userAgentHeader)) {
+    targetUrl.hostname = mobileHost;
+  } else {
+    targetUrl.hostname = webHost;
   }
-  return fetch(req)
+
+  const headers = new Headers();
+  headers.set("Host", originalUrl.host);
+
+  // Create a completely new request instead of modifying existing one
+  const newRequest = new Request(targetUrl.toString(), {
+    method: request.method,
+    headers: headers,
+    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined
+  });
+
+  // Log debug info
+  console.log("User-Agent:", userAgentHeader);
+  console.log("Device:", isMobile(userAgentHeader) ? "Mobile" : "Desktop");
+  console.log("Target URL:", targetUrl.toString());
+  console.log("Host header:", originalUrl.host);
+
+  return fetch(newRequest);
+}
+
+function isMobile(userAgent) {
+  const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  return mobileRegex.test(userAgent);
 }
 
 export const config = {
