@@ -13,7 +13,7 @@ export default async function handler(request) {
   }
 
   const headers = new Headers();
-  headers.set("Host", originalUrl.host);
+  headers.set("Host", targetUrl.host);
 
   // Create a completely new request instead of modifying existing one
   const newRequest = new Request(targetUrl.toString(), {
@@ -26,7 +26,7 @@ export default async function handler(request) {
   console.log("User-Agent:", userAgentHeader);
   console.log("Device:", isMobile(userAgentHeader) ? "Mobile" : "Desktop");
   console.log("Target URL:", targetUrl.toString());
-  console.log("Host header:", originalUrl.host);
+  console.log("Host header:", targetUrl.host);
 
   return fetch(newRequest);
 }
