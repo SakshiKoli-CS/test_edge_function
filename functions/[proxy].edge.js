@@ -15,6 +15,7 @@ export default async function handler(request) {
     headers: request.headers,
     body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined
   });
+  newRequest.headers.delete('x-launch-deploymentuid');
   return fetch(newRequest);
 }
 
