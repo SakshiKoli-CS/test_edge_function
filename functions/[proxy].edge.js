@@ -3,7 +3,7 @@ export default async function handler(req, context) {
   const route = parsedUrl.pathname;
   const envVariable = context.env.TEST_KEY;
   
-  if (route === '/api/test') {
+  if (route === '/test') {
     console.log("Inside /test");
     
     const target = "https://exampleeu.eu-contentstackapps.com/";
