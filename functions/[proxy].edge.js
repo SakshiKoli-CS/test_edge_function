@@ -4,10 +4,32 @@ const webHost = "testedgefunction.contentstackapps.com";
 export default async function handler(request) {
   const userAgentHeader = request.headers.get('User-Agent');
   const targetUrl = new URL(request.url);
-  if (isMobile(userAgentHeader)) {
-    targetUrl.hostname = mobileHost;
-  } else {
-    targetUrl.hostname = webHost;
+  
+  // Fetch data from API route
+  const apiUrl = new URL('/api/data', targetUrl.origin);
+  console.log('Fetching data from API:', apiUrl.toString());
+  
+  try {
+    const apiResponse = await fetch(apiUrl);
+    const apiData = await apiResponse.json();
+    console.log('API data received:', apiData);
+    
+    // Use the API data to determine hosts (or use for other logic)
+    const hosts = apiData.hosts;
+    if (isMobile(userAgentHeader)) {
+      targetUrl.hostname = hosts.mobile || mobileHost;
+    } else {
+      targetUrl.hostname = hosts.desktop || webHost;
+    }
+    
+  } catch (error) {
+    console.error('Error fetching API data:', error);
+    // Fallback to hardcoded hosts
+    if (isMobile(userAgentHeader)) {
+      targetUrl.hostname = mobileHost;
+    } else {
+      targetUrl.hostname = webHost;
+    }
   }
 
   const response = await fetch(new Request(targetUrl, request));
