@@ -1,4 +1,4 @@
-const mobileHost = "edge-device-adaptation-mobile.contentstackapps.com";
+const mobileHost = "dynamiclaunch.devcontentstackapps.com";
 const webHost = "testedgefunction.contentstackapps.com";
 
 export default async function handler(request) {
