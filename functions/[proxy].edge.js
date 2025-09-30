@@ -1,4 +1,4 @@
-const mobileHost = "dynamiclaunch.devcontentstackapps.com";
+const mobileHost = "blogwebsite.devcontentstackapps.com";
 const webHost = "testedgefunction.contentstackapps.com";
 
 export default async function handler(request) {
@@ -31,3 +31,8 @@ function isMobile(userAgent) {
 
 // const newRequest = new Request(targetUrl.toString(), request);
 // return fetch(newRequest);
+
+
+// const response = await fetch(new Request(targetUrl, request));
+// console.log('response status', response.clone().status);
+// return response;
