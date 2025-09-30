@@ -10,12 +10,9 @@ export default async function handler(request) {
     targetUrl.hostname = webHost;
   }
 
-  const newRequest = new Request(targetUrl.toString(), {
-    method: request.method,
-    headers: request.headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined
-  });
-  newRequest.headers.delete('x-launch-deploymentuid');
+  const rewrittenUrl = targetUrl.toString();
+  const newRequest = new Request(rewrittenUrl, request);
+  // newRequest.headers.delete('x-launch-deploymentuid');
   return fetch(newRequest);
 }
 
