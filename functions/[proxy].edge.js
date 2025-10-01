@@ -1,6 +1,3 @@
-const mobileHost = "blogwebsite.devcontentstackapps.com";
-const webHost = "testedgefunction.contentstackapps.com";
-
 export default async function handler(request) {
   const userAgentHeader = request.headers.get('User-Agent');
   const targetUrl = new URL(request.url);
@@ -14,22 +11,19 @@ export default async function handler(request) {
     const apiData = await apiResponse.json();
     console.log('API data received:', apiData);
     
-    // Use the API data to determine hosts (or use for other logic)
+    // Use the API data to determine hosts
     const hosts = apiData.hosts;
     if (isMobile(userAgentHeader)) {
-      targetUrl.hostname = hosts.mobile || mobileHost;
+      targetUrl.hostname = hosts.mobile;
     } else {
-      targetUrl.hostname = hosts.desktop || webHost;
+      targetUrl.hostname = hosts.desktop;
     }
     
   } catch (error) {
     console.error('Error fetching API data:', error);
-    // Fallback to hardcoded hosts
-    if (isMobile(userAgentHeader)) {
-      targetUrl.hostname = mobileHost;
-    } else {
-      targetUrl.hostname = webHost;
-    }
+    // No fallback - return original request
+    console.log('No rewrite performed due to API error');
+    return fetch(request);
   }
 
   const response = await fetch(new Request(targetUrl, request));
