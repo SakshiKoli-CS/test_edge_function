@@ -4,5 +4,8 @@
       "source": "/test",
       "destination": "https://edge-device-adaptation-mobile.contentstackapps.com"
     }
-  ]
+  ],
+  "logging": {
+    "target": "test_logTarget"
+  }
 }
