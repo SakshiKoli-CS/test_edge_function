@@ -7,7 +7,7 @@ export default async function handler(request) {
   console.log('Fetching data from API:', apiUrl.toString());
   
   try {
-    const apiResponse = await fetch(new Request(apiUrl));
+    const apiResponse = await fetch(apiUrl, new Request(apiUrl));
     const apiData = await apiResponse.json();
     console.log('API data received:', apiData);
     
