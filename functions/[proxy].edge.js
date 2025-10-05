@@ -3,11 +3,10 @@ export default async function handler(request) {
   const targetUrl = new URL(request.url);
   
   // Fetch data from API route
-  const apiUrl = new URL('/api/data', targetUrl.origin);
-  console.log('Fetching data from API:', apiUrl.toString());
+  console.log('Fetching data from API');
   
   try {
-    const apiResponse = await fetch(apiUrl, new Request(apiUrl));
+    const apiResponse = await fetch('https://testedgefunction.devcontentstackapps.com/api/data');
     const apiData = await apiResponse.json();
     console.log('API data received:', apiData);
     
