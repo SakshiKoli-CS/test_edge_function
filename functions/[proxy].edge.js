@@ -11,8 +11,19 @@ export default async function handler(request) {
   console.log('API URL:', apiUrl.toString());
   
   try {
+    // Log ALL headers from the working request
+    const workingRequest = new Request(apiUrl, request);
+    console.log('\n=== WORKING REQUEST (Method 1) DETAILS ===');
+    console.log('URL:', workingRequest.url);
+    console.log('Method:', workingRequest.method);
+    console.log('Headers:');
+    for (const [key, value] of workingRequest.headers.entries()) {
+      console.log(`  ${key}: ${value}`);
+    }
+    console.log('==========================================\n');
+    
     // Method 1 (Working): fetch(new Request(apiUrl, request))
-    const apiResponse = await fetch(new Request(apiUrl, request));
+    const apiResponse = await fetch(workingRequest);
     console.log('Method 1 - API Response Status:', apiResponse.status);
     const apiData = await apiResponse.json();
     console.log('Method 1 - API data received:', apiData);
@@ -39,21 +50,24 @@ export default async function handler(request) {
       console.error('Method 4 - Error:', err.message);
     }
     
-    // Test Method 4 with explicit GET and headers
-    console.log('\n=== Testing Method 4 with Headers ===');
+    // Test Method 4 with ALL headers from working request
+    console.log('\n=== Testing Method 4 with ALL Headers ===');
     try {
+      // Copy ALL headers from the working request
+      const allHeaders = {};
+      for (const [key, value] of workingRequest.headers.entries()) {
+        allHeaders[key] = value;
+      }
+      
       const method4HeadersResponse = await fetch(apiUrl.toString(), {
-        method: 'GET',
-        headers: {
-          'User-Agent': request.headers.get('User-Agent') || 'EdgeFunction/1.0',
-          'Accept': 'application/json'
-        }
+        method: workingRequest.method,
+        headers: allHeaders
       });
-      console.log('Method 4 (with headers) - Status:', method4HeadersResponse.status);
+      console.log('Method 4 (with ALL headers) - Status:', method4HeadersResponse.status);
       const method4HeadersData = await method4HeadersResponse.json();
-      console.log('Method 4 (with headers) - Data:', method4HeadersData);
+      console.log('Method 4 (with ALL headers) - Data:', method4HeadersData);
     } catch (err) {
-      console.error('Method 4 (with headers) - Error:', err.message);
+      console.error('Method 4 (with ALL headers) - Error:', err.message);
     }
     
     // Use the API data to determine hosts
