@@ -5,20 +5,14 @@ export default async function handler(request) {
   console.log('Request Method:', request.method);
   console.log('Request URL:', request.url);
   
-  // Fetch data from API route
-  const apiUrl = new URL('/api/data', targetUrl.origin);
-  console.log('API URL:', apiUrl.toString());
-  
   try {
-    // Method 3: fetch(apiUrl, new Request(apiUrl)) with x-request-origin header
-    const apiRequest = new Request(apiUrl, {
+    // Method 4: Direct hardcoded URL fetch with x-request-origin header
+    const apiResponse = await fetch('https://testedgefunction.devcontentstackapps.com/api/data', {
       method: 'GET',
       headers: {
         'x-request-origin': request.headers.get('x-request-origin')
       }
     });
-    
-    const apiResponse = await fetch(apiUrl, apiRequest);
     console.log('API Response Status:', apiResponse.status);
     
     const apiData = await apiResponse.json();
