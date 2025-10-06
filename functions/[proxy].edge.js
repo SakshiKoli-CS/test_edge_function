@@ -18,9 +18,13 @@ export default async function handler(request) {
   console.log('🔑 x-request-origin exists?', xRequestOrigin !== null);
   
   try {
+    // Use dynamic URL based on current request origin
+    const apiUrl = new URL('/api/data', targetUrl.origin);
+    console.log('API URL:', apiUrl.toString());
+    
     // Test 1: WITH x-request-origin (should work)
     console.log('\n=== TEST 1: WITH x-request-origin ===');
-    const test1Response = await fetch('https://testedgefunction.devcontentstackapps.com/api/data', {
+    const test1Response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {
         'x-request-origin': request.headers.get('x-request-origin')
@@ -43,7 +47,7 @@ export default async function handler(request) {
     console.log('Headers being sent (count):', Object.keys(allHeadersExceptXRequestOrigin).length);
     console.log('Headers being sent:', Object.keys(allHeadersExceptXRequestOrigin).join(', '));
     
-    const test2Response = await fetch('https://testedgefunction.devcontentstackapps.com/api/data', {
+    const test2Response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: allHeadersExceptXRequestOrigin
     });
@@ -58,7 +62,7 @@ export default async function handler(request) {
     }
     
     // Use Test 1 data for the actual redirect logic
-    const apiResponse = await fetch('https://testedgefunction.devcontentstackapps.com/api/data', {
+    const apiResponse = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {
         'x-request-origin': request.headers.get('x-request-origin')
