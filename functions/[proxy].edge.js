@@ -28,46 +28,120 @@ export default async function handler(request) {
     const apiData = await apiResponse.json();
     console.log('Method 1 - API data received:', apiData);
     
-    // Test Method 3: fetch(apiUrl, new Request(apiUrl))
-    console.log('\n=== Testing Method 3 ===');
+    // Test 1: Only x-launch-deploymentuid
+    console.log('\n=== Test 1: Only x-launch-deploymentuid ===');
     try {
-      const method3Response = await fetch(apiUrl, new Request(apiUrl));
-      console.log('Method 3 - Status:', method3Response.status);
-      const method3Data = await method3Response.json();
-      console.log('Method 3 - Data:', method3Data);
-    } catch (err) {
-      console.error('Method 3 - Error:', err.message);
-    }
-    
-    // Test Method 4: fetch(apiUrl.toString())
-    console.log('\n=== Testing Method 4 ===');
-    try {
-      const method4Response = await fetch(apiUrl.toString());
-      console.log('Method 4 - Status:', method4Response.status);
-      const method4Data = await method4Response.json();
-      console.log('Method 4 - Data:', method4Data);
-    } catch (err) {
-      console.error('Method 4 - Error:', err.message);
-    }
-    
-    // Test Method 4 with ALL headers from working request
-    console.log('\n=== Testing Method 4 with ALL Headers ===');
-    try {
-      // Copy ALL headers from the working request
-      const allHeaders = {};
-      for (const [key, value] of workingRequest.headers.entries()) {
-        allHeaders[key] = value;
-      }
-      
-      const method4HeadersResponse = await fetch(apiUrl.toString(), {
-        method: workingRequest.method,
-        headers: allHeaders
+      const test1Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'x-launch-deploymentuid': request.headers.get('x-launch-deploymentuid')
+        }
       });
-      console.log('Method 4 (with ALL headers) - Status:', method4HeadersResponse.status);
-      const method4HeadersData = await method4HeadersResponse.json();
-      console.log('Method 4 (with ALL headers) - Data:', method4HeadersData);
+      console.log('Test 1 - Status:', test1Response.status);
+      if (test1Response.ok) {
+        const test1Data = await test1Response.json();
+        console.log('Test 1 - SUCCESS! Data:', test1Data);
+      }
     } catch (err) {
-      console.error('Method 4 (with ALL headers) - Error:', err.message);
+      console.error('Test 1 - Error:', err.message);
+    }
+    
+    // Test 2: Only host header
+    console.log('\n=== Test 2: Only host ===');
+    try {
+      const test2Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'host': request.headers.get('host')
+        }
+      });
+      console.log('Test 2 - Status:', test2Response.status);
+      if (test2Response.ok) {
+        const test2Data = await test2Response.json();
+        console.log('Test 2 - SUCCESS! Data:', test2Data);
+      }
+    } catch (err) {
+      console.error('Test 2 - Error:', err.message);
+    }
+    
+    // Test 3: Only x-request-origin
+    console.log('\n=== Test 3: Only x-request-origin ===');
+    try {
+      const test3Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'x-request-origin': request.headers.get('x-request-origin')
+        }
+      });
+      console.log('Test 3 - Status:', test3Response.status);
+      if (test3Response.ok) {
+        const test3Data = await test3Response.json();
+        console.log('Test 3 - SUCCESS! Data:', test3Data);
+      }
+    } catch (err) {
+      console.error('Test 3 - Error:', err.message);
+    }
+    
+    // Test 4: x-launch-deploymentuid + host
+    console.log('\n=== Test 4: x-launch-deploymentuid + host ===');
+    try {
+      const test4Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'x-launch-deploymentuid': request.headers.get('x-launch-deploymentuid'),
+          'host': request.headers.get('host')
+        }
+      });
+      console.log('Test 4 - Status:', test4Response.status);
+      if (test4Response.ok) {
+        const test4Data = await test4Response.json();
+        console.log('Test 4 - SUCCESS! Data:', test4Data);
+      }
+    } catch (err) {
+      console.error('Test 4 - Error:', err.message);
+    }
+    
+    // Test 5: x-launch-deploymentuid + x-request-origin
+    console.log('\n=== Test 5: x-launch-deploymentuid + x-request-origin ===');
+    try {
+      const test5Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'x-launch-deploymentuid': request.headers.get('x-launch-deploymentuid'),
+          'x-request-origin': request.headers.get('x-request-origin')
+        }
+      });
+      console.log('Test 5 - Status:', test5Response.status);
+      if (test5Response.ok) {
+        const test5Data = await test5Response.json();
+        console.log('Test 5 - SUCCESS! Data:', test5Data);
+      }
+    } catch (err) {
+      console.error('Test 5 - Error:', err.message);
+    }
+    
+    // Test 6: All Launch/CloudFlare headers
+    console.log('\n=== Test 6: All Launch/CloudFlare headers ===');
+    try {
+      const test6Response = await fetch(apiUrl.toString(), {
+        method: 'GET',
+        headers: {
+          'x-launch-deploymentuid': request.headers.get('x-launch-deploymentuid'),
+          'x-request-origin': request.headers.get('x-request-origin'),
+          'host': request.headers.get('host'),
+          'cf-ray': request.headers.get('cf-ray'),
+          'cf-visitor': request.headers.get('cf-visitor'),
+          'cf-connecting-ip': request.headers.get('cf-connecting-ip'),
+          'cf-ipcountry': request.headers.get('cf-ipcountry')
+        }
+      });
+      console.log('Test 6 - Status:', test6Response.status);
+      if (test6Response.ok) {
+        const test6Data = await test6Response.json();
+        console.log('Test 6 - SUCCESS! Data:', test6Data);
+      }
+    } catch (err) {
+      console.error('Test 6 - Error:', err.message);
     }
     
     // Use the API data to determine hosts
