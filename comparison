@@ -1,0 +1,32 @@
+1. 
+//  // Fetch data from API route
+//   const apiUrl = 'https://testedgefunction.devcontentstackapps.com/api/data';
+//   console.log('Fetching data from API:', apiUrl);
+  
+//   try {
+//     const apiResponse = await fetch(new Request(apiUrl, request));
+//     const apiData = await apiResponse.json();
+//     console.log('API data received:', apiData);
+
+2. 
+// // Fetch data from API route
+//   const apiUrl = new URL('/api/data', targetUrl.origin);
+//   console.log('Fetching data from API:', apiUrl.toString());
+
+//   try {
+//     const apiResponse = await fetch(new Request(apiUrl, request));
+//     const apiData = await apiResponse.json();
+//     console.log('API data received:', apiData);
+
+// 1 & 2 Both are working (able to fetch data from API route)
+
+
+3. 
+// const apiResponse = await fetch(apiUrl, new Request(apiUrl));
+
+4. 
+// const apiResponse = await fetch('https://testedgefunction.devcontentstackapps.com/api/data'); 
+
+// 3 & 4 Both are not working (not able to fetch data from API route, here I am getting error as Error fetching API data: SyntaxError: Unexpected end of JSON input) 
+
+
