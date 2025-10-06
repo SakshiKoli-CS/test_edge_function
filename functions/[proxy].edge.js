@@ -6,8 +6,9 @@ export default async function handler(request) {
   console.log('Request Method:', request.method);
   console.log('Request URL:', request.url);
   
-  // Fetch data from API route
-  const apiUrl = 'https://testedgefunction.devcontentstackapps.com/api/data';
+  // Fetch data from API route - use the same origin as the incoming request
+  const apiUrl = new URL('/api/data', targetUrl.origin);
+  console.log('API URL:', apiUrl.toString());
   
   try {
     const apiResponse = await fetch(new Request(apiUrl, request));
