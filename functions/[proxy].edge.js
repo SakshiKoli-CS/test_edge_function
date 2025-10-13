@@ -3,7 +3,7 @@ export default async function handler(request, context) {
     const currentUrl = new URL(request.url);
     
     const apiUrl = `${currentUrl.protocol}//${currentUrl.host}/api/rewrite`;
-    const response = await fetch(apiUrl);
+    const response = await fetch(new Request(apiUrl, request));
     const rewrites = response.ok ? await response.json() : [];
     const rewrite = rewrites.find(rule => rule.source === currentUrl.pathname);
     
