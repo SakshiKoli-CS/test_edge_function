@@ -1,13 +1,23 @@
-export default async function handler(request) {
-  const url = new URL(request.url);
-
-  if (url.pathname === "/test") {
-    url.hostname = "edge-device-adaptation-mobile.contentstackapps.com";
-
-    const newRequest = new Request(url, request);
-
-    return fetch(newRequest);
+export default async function handler(request, context) {
+  try {
+    const currentUrl = new URL(request.url);
+    
+    const apiUrl = `${currentUrl.protocol}//${currentUrl.host}/api/rewrite`;
+    const response = await fetch(apiUrl);
+    const rewrites = response.ok ? await response.json() : [];
+    const rewrite = rewrites.find(rule => rule.source === currentUrl.pathname);
+    
+    if (rewrite) {
+      const newUrl = new URL(request.url);
+      newUrl.pathname = rewrite.destination;
+      
+      const newRequest = new Request(newUrl.toString(), request);
+      return fetch(newRequest);
+    }
+    
+    return fetch(request);
+    
+  } catch (error) {
+    return fetch(request);
   }
-
-  return fetch(request);
 }
