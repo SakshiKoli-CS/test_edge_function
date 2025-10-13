@@ -7,8 +7,8 @@ export default function handler(req, res) {
       message: 'Data from API route',
       timestamp: new Date().toISOString(),
       hosts: {
-        mobile: 'demo-site-edge.gcpcontentstackapps.com',
-        desktop: 'testedgefunction.gcpcontentstackapps.com'
+        mobile: 'dnd-suvish-in.contentstackapps.com',
+        desktop: 'testedgefunction.contentstackapps.com'
       },
       config: {
         redirectEnabled: true,

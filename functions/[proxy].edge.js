@@ -103,7 +103,6 @@ function isMobile(userAgent) {
 // });
 
 
-
 // const newRequest = new Request(targetUrl.toString(), request);
 // return fetch(newRequest);
 
