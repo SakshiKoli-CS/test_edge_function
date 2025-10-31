@@ -2,15 +2,12 @@ export default async function handler(request, context) {
   try {
     const currentUrl = new URL(request.url);
     
-    // Block indexing only for the specific test subdomain
-    if (currentUrl.hostname === 'testedgefunction-test.contentstackapps.com') {
-      const res = await fetch(request);
-      const headers = new Headers(res.headers);
-      headers.set('X-Robots-Tag', 'noindex, nofollow');
-      return new Response(res.body, {
-        status: res.status,
-        statusText: res.statusText,
-        headers,
+    const hostname = currentUrl.hostname;
+    
+    if (hostname.includes('contentstackapps.com')) {
+      return new Response('Forbidden', {
+        status: 403,
+        statusText: 'Forbidden',
       });
     }
     
