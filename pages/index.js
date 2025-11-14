@@ -23,7 +23,7 @@ export default function Home() {
     }}>
       <div>
         <h1 style={{ margin: '0', color: '#333' }}>
-          Edge Device Adaptation
+          Edgeeee Device Adaptation
         </h1>
         <p style={{ margin: '20px 0', color: '#666', fontSize: '16px' }}>
           Redirecting based on device type using Edge Runtime
