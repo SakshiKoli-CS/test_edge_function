@@ -1,4 +1,4 @@
-export async function getStaticProps({ res }) {
+export async function getServerSideProps({ res }) {
   
   res.setHeader('Cache-Control', 'public, s-maxage=60');
   
