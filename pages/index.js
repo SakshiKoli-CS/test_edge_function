@@ -28,6 +28,9 @@ export default function Home() {
         <p style={{ margin: '20px 0', color: '#666', fontSize: '16px' }}>
           Redirecting based on device type using Edge Runtime
         </p>
+        <a href="mailto:example@example.com" style={{ color: '#0070f3', textDecoration: 'none', fontSize: '16px' }}>
+          Contact Us
+        </a>
       </div>
     </div>
   )
