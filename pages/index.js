@@ -1,8 +1,6 @@
 export async function getServerSideProps({ res }) {
   
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
+  res.setHeader('Cache-Control', 'public, s-maxage=60');
   
   return {
     props: {}
