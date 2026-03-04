@@ -40,6 +40,16 @@
       "source": "/careers-v3\\?id=:id(.+)",
       "destination": "/company/about-us/careers",
       "statusCode": 302
+    },
+    {
+      "source": "/monarch-connecttt/news-and-blogs\\*",
+      "destination": "/company/resources",
+      "statusCode": 301
+    },
+    {
+      "source": "/monarch-connect/news-and-blogs\\*/:path*",
+      "destination": "/company/resources",
+      "statusCode": 301
     }
   ]
 }
