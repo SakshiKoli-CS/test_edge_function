@@ -22,7 +22,22 @@
       "statusCode": 301
     },
     {
-      "source": "/careers\\?(.*)id=:id/:role(.*)",
+      "source": "/careers",
+      "destination": "/company/about-us/careers",
+      "statusCode": 302
+    },
+    {
+      "source": "/careers-v1\\?(.*)id=:id([^&]+)",
+      "destination": "/company/about-us/careers",
+      "statusCode": 302
+    },
+    {
+      "source": "/careers-v2\\?(.*)",
+      "destination": "/company/about-us/careers",
+      "statusCode": 302
+    },
+    {
+      "source": "/careers-v3\\?id=:id(.+)",
       "destination": "/company/about-us/careers",
       "statusCode": 302
     }
