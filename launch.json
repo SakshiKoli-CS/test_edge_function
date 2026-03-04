@@ -7,7 +7,7 @@
   ],
   "redirects": [
     {
-      "source": "/pqr/abc*",
+      "source": "/pqr/abc",
       "destination": "/company/resources",
       "statusCode": 301
     },
@@ -15,6 +15,16 @@
       "source": "/blog/post",
       "destination": "https://testrobottxt.contentstackapps.com/robots.txt",
       "statusCode": 308
+    },
+    {
+      "source": "/old-page",
+      "destination": "/new-page?ref=redirect",
+      "statusCode": 301
+    },
+    {
+      "source": "/careers\\?(.*)id=:id/:role(.*)",
+      "destination": "/company/about-us/careers",
+      "statusCode": 302
     }
   ]
 }
