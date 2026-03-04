@@ -5,7 +5,16 @@
       "destination": "https://edge-device-adaptation-mobile.contentstackapps.com"
     }
   ],
-  "logging": {
-    "target": "test_logTarget"
-  }
+  "redirects": [
+    {
+      "source": "/pqr/abc*",
+      "destination": "/company/resources",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/post",
+      "destination": "https://testrobottxt.contentstackapps.com/robots.txt",
+      "statusCode": 308
+    }
+  ]
 }
