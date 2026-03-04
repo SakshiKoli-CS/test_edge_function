@@ -18,7 +18,7 @@
     },
     {
       "source": "/old-page",
-      "destination": "/new-page?ref=redirect",
+      "destination": "/new-page",
       "statusCode": 301
     },
     {
