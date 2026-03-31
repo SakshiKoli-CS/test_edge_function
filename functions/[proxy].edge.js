@@ -71,30 +71,24 @@ export default async function handler(request, context) {
 }
 
 const main = async (request, context) => {
-  const [req1, req2, req3, req4, req5] = [
-    request.clone(),
-    request.clone(),
-    request.clone(),
-    request.clone(),
-    request.clone(),
-  ];
+  const req1 = request.clone();
+  const req2 = request.clone();
 
-  const parsedUrl = new URL(req1?.url);
-  const pathname = parsedUrl?.pathname.toString();
+  const parsedUrl = new URL(req1.url);
+  const pathname = parsedUrl.pathname;
 
   let response;
 
   if (
-    (pathname.startsWith('/api/') || pathname.startsWith('/api')) &&
+    (pathname.startsWith('/api/') || pathname === '/api') &&
     !pathname.startsWith('/api/docs/changelog/rss.xml')
   ) {
-    // For Contentstack Launch, API routes are usually handled by the framework (Next.js)
-    // We should let the framework handle it by just fetching the request
-    response = await fetch(request);
-    response = addSecurityHeaders(response);
+    // For Contentstack Launch, API routes are handled by the framework (Next.js)
+    const fetchResponse = await fetch(request);
+    response = addSecurityHeaders(fetchResponse);
   } else {
-    const redirectResponse = await redirects(req3, context);
-    if (redirectResponse && redirectResponse.status !== 200) {
+    const redirectResponse = await redirects(req2, context);
+    if (redirectResponse) {
       response = redirectResponse;
     } else {
       // Handle double slash URLs to prevent SecurityError
@@ -105,20 +99,19 @@ const main = async (request, context) => {
           redirectUrl.pathname = cleanedPath;
           response = Response.redirect(redirectUrl.toString(), 301);
         } else {
-          response = await personalizeHandler(req4, context);
+          response = await personalizeHandler(request, context);
         }
       } else {
-        response = await personalizeHandler(req4, context);
+        response = await personalizeHandler(request, context);
       }
     }
   }
 
-  // Log to Profound AI (non-blocking)
-  // logToProfoundAI(req5, response);
-
   // Ensure security headers are present on final response
-  // Note: Redirects don't need X-Content-Type-Options, but we'll add it for consistency
-  return addSecurityHeaders(response);
+  if (response) {
+    return addSecurityHeaders(response);
+  }
+  return new Response('Internal Server Error', { status: 500 });
 };
 
 // Removed internalApiRouter and apiHandler as they are not needed for standard Next.js deployments on Launch
@@ -129,9 +122,13 @@ const redirects = async (request, context) => {
     const route = modifiedUrl?.toString()?.startsWith('/https://')
       ? modifiedUrl?.toString()?.substring(1)
       : modifiedUrl.pathname;
+      
+    const hostHeader = request.headers.get('x-forwarded-host') || request.headers.get('host') || modifiedUrl.hostname || '';
+    const hostname = hostHeader.split(':')[0].toLowerCase();
+    
     const redirectsData = (await getRedirects(context)) || [];
     for (const redirect of redirectsData) {
-      if (route === redirect.source && request.method === 'GET') {
+      if ((hostname === redirect.source || route === redirect.source) && request.method === 'GET') {
         if (redirect.destination.includes('https')) {
           const destinationUrl = redirect.destination;
           return Response.redirect(decodeURIComponent(destinationUrl), 308);
@@ -141,12 +138,10 @@ const redirects = async (request, context) => {
         }
       }
     }
-    const fetchResponse = await fetch(request);
-    return addSecurityHeaders(fetchResponse);
+    return null;
   } catch (error) {
     console.error('Redirects ERROR:\n', error);
-    const fetchResponse = await fetch(request);
-    return addSecurityHeaders(fetchResponse);
+    return null;
   }
 };
 
@@ -168,14 +163,16 @@ const personalizeHandler = async (request, context) => {
     if (isAIBotRequest(userAgent)) {
       return fetch(request);
     }
-    if (context.env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_EDGE_API_URL) {
+    const env = (context && context.env) ? context.env : {};
+    
+    if (env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_EDGE_API_URL) {
       Personalize.setEdgeApiUrl(
-        context.env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_EDGE_API_URL,
+        env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_EDGE_API_URL,
       );
     }
 
     const personalizeSdk = await Personalize.init(
-      context.env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_PROJECT_UID,
+      env.NEXT_PUBLIC_CONTENTSTACK_PERSONALIZE_PROJECT_UID,
       {
         request,
       },
@@ -199,8 +196,13 @@ const personalizeHandler = async (request, context) => {
     return addSecurityHeaders(modifiedResponse);
   } catch (error) {
     console.log('Personalize ERROR:\n', error);
-    const fetchResponse = await fetch(request);
-    return addSecurityHeaders(fetchResponse);
+    try {
+      const fetchResponse = await fetch(request.clone());
+      return addSecurityHeaders(fetchResponse);
+    } catch (fallbackError) {
+      console.error('Fallback fetch failed:', fallbackError);
+      return new Response('Internal Server Error', { status: 500 });
+    }
   }
 };
 
